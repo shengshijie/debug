@@ -10,8 +10,8 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.gson.Gson
 import com.shengshijie.debug.monitor.MonitorBean
-import com.shengshijie.debug.monitor.byteMemParse
-import com.shengshijie.debug.monitor.byteNetParse
+import com.shengshijie.debug.monitor.memParse
+import com.shengshijie.debug.monitor.netParse
 import com.shengshijie.debug.upload.Server
 import com.shengshijie.log.HLog
 import com.shengshijie.log.LogbackImpl
@@ -34,8 +34,8 @@ class MainActivity : AppCompatActivity() {
                     val monitorInfo = Gson().fromJson(it, MonitorBean::class.java)
                     HLog.string(monitorInfo)
                     addEntry(lc_cpu, "CPU", monitorInfo.cpumonitor.toFloat())
-                    addEntry(lc_memory, "MEMORY", byteMemParse(monitorInfo.memorymonitor).toFloat())
-                    addEntry(lc_network, "NETWORK", byteNetParse(monitorInfo.networkmonitor).toFloat())
+                    addEntry(lc_memory, "MEMORY", memParse(monitorInfo.memorymonitor).toFloat())
+                    addEntry(lc_network, "NETWORK", netParse(monitorInfo.networkmonitor).toFloat())
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

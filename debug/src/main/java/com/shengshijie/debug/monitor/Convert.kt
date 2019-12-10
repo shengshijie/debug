@@ -5,34 +5,34 @@ fun byteUnitConvert(byteSize: Double): String {
         byteSize < 0 -> {
             "shouldn't be less than zero!"
         }
-        byteSize < KB -> {
+        byteSize < K -> {
             String.format("%.2fB", byteSize)
         }
-        byteSize < MB -> {
-            String.format("%.2fKB", byteSize / KB)
+        byteSize < M -> {
+            String.format("%.2fKB", byteSize / K)
         }
-        byteSize < GB -> {
-            String.format("%.2fMB", byteSize / MB)
+        byteSize < G -> {
+            String.format("%.2fMB", byteSize / M)
         }
         else -> {
-            String.format("%.2fGB", byteSize / GB)
+            String.format("%.2fGB", byteSize / G)
         }
     }
 }
 
-fun byteMemParse(byteString: String): Double {
+fun memParse(byteString: String): Double {
     return when {
         byteString.endsWith("KB") -> {
-            byteString.replace(Regex("[^\\d.]"), "").toDouble()
+            byteString.replace(Regex("[^\\d.]"), "").toDouble()/ K
         }
         byteString.endsWith("MB") -> {
-            byteString.replace(Regex("[^\\d.]"), "").toDouble() * KB
+            byteString.replace(Regex("[^\\d.]"), "").toDouble()
         }
         byteString.endsWith("GB") -> {
-            byteString.replace(Regex("[^\\d.]"), "").toDouble() * MB
+            byteString.replace(Regex("[^\\d.]"), "").toDouble() * K
         }
         byteString.endsWith("B") -> {
-            byteString.replace(Regex("[^\\d.]"), "").toDouble() / KB
+            byteString.replace(Regex("[^\\d.]"), "").toDouble() / M
         }
         else -> {
             byteString.replace(Regex("[^\\d.]"), "").toDouble()
@@ -40,20 +40,20 @@ fun byteMemParse(byteString: String): Double {
     }
 }
 
-fun byteNetParse(byteString: String): Double {
+fun netParse(byteString: String): Double {
     byteString.replace("/S","")
     return when {
         byteString.endsWith("KB") -> {
             byteString.replace(Regex("[^\\d.]"), "").toDouble()
         }
         byteString.endsWith("MB") -> {
-            byteString.replace(Regex("[^\\d.]"), "").toDouble() * KB
+            byteString.replace(Regex("[^\\d.]"), "").toDouble() * K
         }
         byteString.endsWith("GB") -> {
-            byteString.replace(Regex("[^\\d.]"), "").toDouble() * MB
+            byteString.replace(Regex("[^\\d.]"), "").toDouble() * M
         }
         byteString.endsWith("B") -> {
-            byteString.replace(Regex("[^\\d.]"), "").toDouble() / KB
+            byteString.replace(Regex("[^\\d.]"), "").toDouble() / K
         }
         else -> {
             byteString.replace(Regex("[^\\d.]"), "").toDouble()
@@ -61,7 +61,6 @@ fun byteNetParse(byteString: String): Double {
     }
 }
 
-const val BYTE = 1
-const val KB = 1024
-const val MB = 1048576
-const val GB = 1072741824
+const val K = 1024
+const val M = 1048576
+const val G = 1072741824
