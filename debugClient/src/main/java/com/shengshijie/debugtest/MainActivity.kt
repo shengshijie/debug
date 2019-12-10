@@ -22,9 +22,6 @@ class MainActivity : AppCompatActivity() {
         HLog.setLogImpl(LogbackImpl().apply {
             file = true
             db = true
-            socket = true
-            socketHost = BuildConfig.HOST
-            socketPort = BuildConfig.PORT
         })
         HLog.init(application, getExternalFilesDir(null)?.absolutePath, "RFT")
         MonitorManager.init(this,interval = 1, upload = true, ip = "192.168.88.114", port = 8088) {
