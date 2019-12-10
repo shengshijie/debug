@@ -2,15 +2,16 @@ package com.shengshijie.debugtest
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.YAxis.AxisDependency
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.gson.Gson
 import com.shengshijie.debug.monitor.MonitorBean
-import com.shengshijie.debug.monitor.byteUnitParse
+import com.shengshijie.debug.monitor.byteMemParse
+import com.shengshijie.debug.monitor.byteNetParse
 import com.shengshijie.debug.upload.Server
 import com.shengshijie.log.HLog
 import com.shengshijie.log.LogbackImpl
@@ -19,30 +20,22 @@ import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
         setContentView(R.layout.activity_main)
         HLog.setLogImpl(LogbackImpl().apply {
             file = true
             db = true
         })
         HLog.init(application, getExternalFilesDir(null)?.absolutePath, "RFT")
-
-        lc_content.setDrawGridBackground(false)
-        lc_content.description.isEnabled = false
-        lc_content.setNoDataText("No data available")
-        lc_content.invalidate()
         thread {
             Server.start(8088) {
                 try {
                     val monitorInfo = Gson().fromJson(it, MonitorBean::class.java)
                     HLog.string(monitorInfo)
-                    addEntry(monitorInfo)
+                    addEntry(lc_cpu, "CPU", monitorInfo.cpumonitor.toFloat())
+                    addEntry(lc_memory, "MEMORY", byteMemParse(monitorInfo.memorymonitor).toFloat())
+                    addEntry(lc_network, "NETWORK", byteNetParse(monitorInfo.networkmonitor).toFloat())
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -50,15 +43,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun addEntry(monitorInfo: MonitorBean) {
-        var data: LineData? = lc_content.data
+    private fun addEntry(lineChart: LineChart, name: String, monitorData: Float) {
+        var data: LineData? = lineChart.data
         if (data == null) {
             data = LineData()
-            lc_content.data = data
+            lineChart.data = data
         }
         var set = data.getDataSetByIndex(0)
         if (set == null) {
-            set = LineDataSet(null, "DataSet 1")
+            set = LineDataSet(null, name)
             set.lineWidth = 2.5f
             set.circleRadius = 4.5f
             set.color = Color.rgb(240, 99, 99)
@@ -68,14 +61,11 @@ class MainActivity : AppCompatActivity() {
             set.valueTextSize = 10f
             data.addDataSet(set)
         }
-        val randomDataSetIndex = (Math.random() * data.dataSetCount).toInt()
-        val randomSet = data.getDataSetByIndex(randomDataSetIndex)
-        val value = byteUnitParse(monitorInfo.networkmonitor)
-        data.addEntry(Entry(randomSet.entryCount.toFloat(), value.toFloat()), randomDataSetIndex)
+        data.addEntry(Entry(data.getDataSetByIndex(0).entryCount.toFloat(), monitorData), 0)
         data.notifyDataChanged()
-        lc_content.notifyDataSetChanged()
-        lc_content.setVisibleXRangeMaximum(6f)
-        lc_content.moveViewTo(data.entryCount - 7.toFloat(), 50f, AxisDependency.LEFT)
+        lineChart.notifyDataSetChanged()
+        lineChart.setVisibleXRangeMaximum(6f)
+        lineChart.moveViewTo(data.entryCount - 7.toFloat(), 50f, AxisDependency.LEFT)
     }
 
 }

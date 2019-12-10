@@ -20,19 +20,43 @@ fun byteUnitConvert(byteSize: Double): String {
     }
 }
 
-fun byteUnitParse(byteString: String): Double {
+fun byteMemParse(byteString: String): Double {
     return when {
-        byteString.contains("KB") -> {
+        byteString.endsWith("KB") -> {
             byteString.replace(Regex("[^\\d.]"), "").toDouble()
         }
-        byteString.contains("MB") -> {
+        byteString.endsWith("MB") -> {
             byteString.replace(Regex("[^\\d.]"), "").toDouble() * KB
         }
-        byteString.contains("GB") -> {
+        byteString.endsWith("GB") -> {
             byteString.replace(Regex("[^\\d.]"), "").toDouble() * MB
         }
+        byteString.endsWith("B") -> {
+            byteString.replace(Regex("[^\\d.]"), "").toDouble() / KB
+        }
         else -> {
-            byteString.replace(Regex("[^\\d.]"), "").toDouble() * GB
+            byteString.replace(Regex("[^\\d.]"), "").toDouble()
+        }
+    }
+}
+
+fun byteNetParse(byteString: String): Double {
+    byteString.replace("/S","")
+    return when {
+        byteString.endsWith("KB") -> {
+            byteString.replace(Regex("[^\\d.]"), "").toDouble()
+        }
+        byteString.endsWith("MB") -> {
+            byteString.replace(Regex("[^\\d.]"), "").toDouble() * KB
+        }
+        byteString.endsWith("GB") -> {
+            byteString.replace(Regex("[^\\d.]"), "").toDouble() * MB
+        }
+        byteString.endsWith("B") -> {
+            byteString.replace(Regex("[^\\d.]"), "").toDouble() / KB
+        }
+        else -> {
+            byteString.replace(Regex("[^\\d.]"), "").toDouble()
         }
     }
 }
