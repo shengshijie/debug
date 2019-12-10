@@ -9,7 +9,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.RandomAccessFile
 
-class MonitorUtils {
+object MonitorUtils {
 
     private var mProcessFile: RandomAccessFile? = null
     private var mAppFile: RandomAccessFile? = null

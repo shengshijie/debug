@@ -33,9 +33,9 @@ class MainActivity : AppCompatActivity() {
                 try {
                     val monitorInfo = Gson().fromJson(it, MonitorBean::class.java)
                     HLog.string(monitorInfo)
-                    addEntry(lc_cpu, "CPU", monitorInfo.cpumonitor.toFloat())
-                    addEntry(lc_memory, "MEMORY", memParse(monitorInfo.memorymonitor).toFloat())
-                    addEntry(lc_network, "NETWORK", netParse(monitorInfo.networkmonitor).toFloat())
+                    addEntry(lc_cpu, "CPU", monitorInfo.cpumonitor.toFloat(),Color.RED)
+                    addEntry(lc_memory, "MEMORY", memParse(monitorInfo.memorymonitor).toFloat(),Color.YELLOW)
+                    addEntry(lc_network, "NETWORK", netParse(monitorInfo.networkmonitor).toFloat(),Color.MAGENTA)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun addEntry(lineChart: LineChart, name: String, monitorData: Float) {
+    private fun addEntry(lineChart: LineChart, name: String, monitorData: Float,color:Int) {
         var data: LineData? = lineChart.data
         if (data == null) {
             data = LineData()
@@ -54,9 +54,9 @@ class MainActivity : AppCompatActivity() {
             set = LineDataSet(null, name)
             set.lineWidth = 2.5f
             set.circleRadius = 4.5f
-            set.color = Color.rgb(240, 99, 99)
-            set.setCircleColor(Color.rgb(240, 99, 99))
-            set.highLightColor = Color.rgb(190, 190, 190)
+            set.color = color
+            set.setCircleColor(color)
+            set.highLightColor = Color.DKGRAY
             set.axisDependency = AxisDependency.LEFT
             set.valueTextSize = 10f
             data.addDataSet(set)
