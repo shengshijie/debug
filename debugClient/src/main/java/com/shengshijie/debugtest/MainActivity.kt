@@ -1,16 +1,28 @@
 package com.shengshijie.debugtest
 
+import android.content.Context
+import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.shengshijie.log.HLog
-import com.shengshijie.log.LogbackImpl
 import com.shengshijie.debug.monitor.CpuMonitor
 import com.shengshijie.debug.monitor.MemoryMonitor
 import com.shengshijie.debug.monitor.MonitorManager
 import com.shengshijie.debug.monitor.NetworkMonitor
-import kotlinx.android.synthetic.main.activity_main.*
+import com.shengshijie.log.HLog
+import com.shengshijie.log.LogbackImpl
+import java.io.DataOutputStream
+import java.io.File
+import java.io.IOException
+import java.net.Inet6Address
+import java.net.InetAddress
+import java.net.NetworkInterface
+import java.net.SocketException
 import java.util.*
+import java.util.concurrent.TimeoutException
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,8 +36,8 @@ class MainActivity : AppCompatActivity() {
             db = true
         })
         HLog.init(application, getExternalFilesDir(null)?.absolutePath, "RFT")
-        MonitorManager.init(this,interval = 1, upload = true, ip = "192.168.88.114", port = 8088) {
-            runOnUiThread { tv_test.text = it }
+        MonitorManager.init(this, interval = 1, upload = true, ip = "192.168.88.114", port = 8088) {
+
         }
     }
 
@@ -41,4 +53,19 @@ class MainActivity : AppCompatActivity() {
             MonitorManager.stopMonitor()
         }
     }
+
+    fun debug(view: View) {
+        adb()
+    }
+
+    private fun adb() {
+        val s = arrayOf("setprop service.adb.tcp.port 5555")
+        try {
+            CommandUtils.execCommand(s, true)
+            { result -> Toast.makeText(this, result.toString(), Toast.LENGTH_SHORT).show() }
+        } catch (e: Exception) {
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }
