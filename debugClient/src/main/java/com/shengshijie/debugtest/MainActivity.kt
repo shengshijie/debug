@@ -59,10 +59,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun adb() {
-        val s = arrayOf("setprop service.adb.tcp.port 5555")
+        val s = arrayOf("setprop service.adb.tcp.port 5555","stop adbd","start adbd")
         try {
             CommandUtils.execCommand(s, true)
-            { result -> Toast.makeText(this, result.toString(), Toast.LENGTH_SHORT).show() }
+            { Toast.makeText(this, "开启成功", Toast.LENGTH_SHORT).show() }
         } catch (e: Exception) {
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         }
